@@ -8,6 +8,13 @@ class Cardioid:
         self.radius = 400
         self.num_lines = 200
         self.translate = self.app.screen.get_width() // 2, self.app.screen.get_height() // 2
+        self.counter, self.inc = 0, 0.01
+
+    def get_color(self):
+        self.counter += self.inc
+        self.counter, self.inc = (self.counter, self.inc) if 0 < self.counter < 1 else (
+            max(min(self.counter, 1), 0), -self.inc)
+        return pg.Color('red').lerp('green', self.counter)
 
     def draw(self):
         time = pg.time.get_ticks()
@@ -19,7 +26,7 @@ class Cardioid:
             y1 = int(self.radius * math.sin(theta)) + self.translate[1]
             x2 = int(self.radius * math.cos(factor * theta)) + self.translate[0]
             y2 = int(self.radius * math.sin(factor * theta)) + self.translate[1]
-            pg.draw.aaline(self.app.screen, 'green', (x1, y1), (x2, y2))
+            pg.draw.aaline(self.app.screen, self.get_color(), (x1, y1), (x2, y2))
 
 
 class App:
