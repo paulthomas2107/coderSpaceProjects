@@ -1,5 +1,6 @@
 import pygame as pg
 from collections import deque
+from random import randrange
 
 
 class Ant:
@@ -30,20 +31,25 @@ class Ant:
 
 
 class App:
-    def __init__(self, WIDTH=1600, HEIGHT=900, CELL_SIZE=12):
+    def __init__(self, WIDTH=1600, HEIGHT=900, CELL_SIZE=8):
         pg.init()
         self.screen = pg.display.set_mode([WIDTH, HEIGHT])
         self.clock = pg.time.Clock()
 
         self.CELL_SIZE = CELL_SIZE
         self.ROWS,  self.COLS = HEIGHT // CELL_SIZE, WIDTH // CELL_SIZE
-        self.grid = [[0 for col in range(self.COLS)] for row in range(self.ROWS)]
+        self.grid = [[0 for _ in range(self.COLS)] for _ in range(self.ROWS)]
 
-        self.ant = Ant(app=self, pos=[self.COLS // 2, self.ROWS // 2], color=pg.Color('orange'))
+        self.ants = [Ant(self, [randrange(self.COLS), randrange(self.ROWS)], self.get_color()) for _ in range(13)]
+
+    @staticmethod
+    def get_color():
+        channel = lambda: randrange(30, 220)
+        return channel(), channel(), channel()
 
     def run(self):
         while True:
-            self.ant.run()
+            [ant.run() for ant in self.ants]
 
             [exit() for i in pg.event.get() if i.type == pg.QUIT]
             pg.display.flip()
