@@ -40,14 +40,15 @@ for x in range(120, WIDTH - 60, box_size[0]):
 """
 
 
-def create_ball(space, pos):
+def create_ball(space):
     ball_moment = pymunk.moment_for_circle(ball_mass, 0, ball_radius)
     ball_body = pymunk.Body(ball_mass, ball_moment)
-    ball_body.position = pos
+    ball_body.position = randrange(x1, x4), randrange(-y1, y1)
     ball_shape = pymunk.Circle(ball_body, ball_radius)
     ball_shape.elasticity = 0.1
     ball_shape.friction = 0.1
     space.add(ball_body, ball_shape)
+    return ball_body
 
 
 def create_segment(from_, to_, thickness, space, color):
@@ -79,6 +80,9 @@ for platform in platforms:
     create_segment(*platform, segment_thickness, space, 'darkolivegreen')
 create_segment(B1, B2, 20, space, 'darkslategrey')
 
+
+balls = [([randrange(256) for i in range(3)], create_ball(space)) for j in range(800)]
+
 while True:
     surface.fill(pg.Color('black'))
 
@@ -87,10 +91,12 @@ while True:
             exit()
         if i.type == pg.MOUSEBUTTONDOWN:
             if i.button == 1:
-                create_ball(space, i.pos)
+                create_ball(space)
 
     space.step(1 / FPS)
     space.debug_draw(draw_options)
+
+    [pg.draw.circle(surface, color, ball.position, ball_radius) for color, ball in balls]
 
     pg.display.flip()
     clock.tick(FPS)
