@@ -25,7 +25,6 @@ R1, R2, R3, R4 = (x4, -100), (x4, y1), (x3, y2), (x3, y3)
 B1, B2 = (0, HEIGHT), (WIDTH, HEIGHT)
 
 
-
 """
 box_mass, box_size = 1, (60, 40)
 for x in range(120, WIDTH - 60, box_size[0]):
@@ -56,6 +55,24 @@ def create_segment(from_, to_, thickness, space, color):
     segment_shape.color = pg.color.THECOLORS[color]
     space.add(segment_shape)
 
+
+def create_peg(x, y, space, color):
+    circle_shape = pymunk.Circle(space.static_body, radius=10, offset=(x, y))
+    circle_shape.color = pg.color.THECOLORS[color]
+    circle_shape.elasticity = 0.1
+    circle_shape.friction = 0.5
+    space.add(circle_shape)
+
+
+peg_y, step = y4, 60
+for i in range(10):
+    peg_x = -1.5 * step if i % 2 else -step
+    for j in range(WIDTH // step + 2):
+        create_peg(peg_x, peg_y, space, 'darkslateblue')
+        if i == 9:
+            create_segment((peg_x, peg_y + 50), (peg_x, HEIGHT), segment_thickness, space, 'darkslategrey')
+        peg_x += step
+    peg_y += 0.5 * step
 
 platforms = (L1, L2), (L2, L3), (L3, L4), (R1, R2), (R2, R3), (R3, R4)
 for platform in platforms:
